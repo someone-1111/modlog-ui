@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logs Moderación Reddit (Carga Infinita)</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <div class="header-bar">
+        <h1>Logs Moderación r/chile</h1>
+        <button id="btn-toggle-dark">🌙</button>
+    </div>
+    <div>
+        <label for="autor">Usuario:</label>
+        <input type="text" id="autor" placeholder="Buscar por usuario" />
+        <label for="moderador">Moderador:</label>
+        <input type="text" id="moderador" placeholder="Buscar por moderador">
+        <label for="accion">Acción:</label>
+        <select id="accion">
+            <option value="">Todas</option>
+        </select>
+        <button id="btnBuscar">Buscar</button>
+        <label>
+            <input type="checkbox" id="ignorarModsCheckbox">
+            Ignorar acciones de bots
+            <span class="tooltip">
+                <i style="color: #007bff;">&#9432;</i>
+                <span class="tooltiptext">
+                    Si activas esta opción, se excluirán todos los registros de los moderadores "AutoModerator", "EmpleadoEstatalBot" y "floodassistant".
+                </span>
+            </span>
+        </label>
+        
+    </div>
+
+    <button id="btnReset">Resetear</button>
+
+    <div id="errorMsg" style="color: red; display: none;"></div>
+
+    <table id="tablaLogs">
+        <thead>
+            <tr>
+                <th>Acción</th>
+                <th>Autor</th>
+                <th>Moderador</th>
+                <th>Fecha</th>
+                <th>Mas</th>
+                <th>Enlace</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="loader">Cargando más resultados...</div>
+    <div id="endMessage" style="display:none; text-align:center; padding:1rem; color:#777;">
+        No hay más resultados
+    </div>
+
+    <div id="miModal" class="modal">
+        <div id="modal-content" class="modal-content"></div>
+    </div>
+
+    <div id="sentinela" style="height: 1px;"></div>
+    <button id="botonForzar">Forzar carga</button>
+
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <button>Botón Izquierdo</button>
+        <button>Botón Derecho</button>
+    </div>
+
+    <script src="js/script.js" defer></script>
+</body>
+
+</html>
