@@ -1,0 +1,325 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 1.5rem;
+  background: #f9f9f9;
+}
+
+label,
+input,
+select,
+button {
+  margin-bottom: 1rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 1rem;
+  
+}
+
+th,
+td {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+th {
+  background: #eee;
+}
+
+
+#test table td {
+  text-align: left;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 1% auto;
+  padding: 1.5rem;
+  border: 1px solid #888;
+  width: 60%;
+  border-radius: 8px;
+}
+
+.cerrar {
+  float: right;
+  font-size: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.cerrar:hover {
+  color: black;
+}
+
+a.sin-estilo {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.sin-estilo:hover {
+  text-decoration: underline;
+  color: #999;
+}
+
+#loader {
+  display: none;
+  text-align: center;
+  padding: 1rem;
+  color: #555;
+}
+
+.tdModalClave {
+  font-weight: bold;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  text-align: center;
+  margin: 0;
+}
+
+.tdModalValor {
+  text-align: left;
+  margin: 0;
+}
+
+#div2 {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+
+}
+
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+#btn-toggle-dark {
+  padding: 2px 6px;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  margin: 0;
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+  background: #eee;
+  border: 1px solid #ccc;
+  transition: background 0.2s;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#btn-toggle-dark:focus {
+  outline: 2px solid #888;
+}
+
+.dark-mode #btn-toggle-dark {
+  background: #3a3f4b;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+/* 📱 Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  div>label,
+  div>input,
+  div>select,
+  button {
+    display: block;
+    width: 100%;
+    margin: 1% auto;
+  }
+
+  table {
+    font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  th,
+  td {
+    padding: 6px;
+  }
+
+  button {
+    padding: 0.6rem;
+    font-size: 0.6rem;
+  }
+
+  .modal-content {
+    width: 90%;
+    margin: 5% auto;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  #btn-toggle-dark {
+    font-size: 1rem;
+    min-width: 28px;
+    min-height: 28px;
+    width: 28px;
+    height: 28px;
+    padding: 1px 4px;
+  }
+
+  .header-bar h1 {
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  table {
+    font-size: 0.75rem;
+  }
+
+  th,
+  td {
+    padding: 4px;
+  }
+}
+
+/* 🎨 Modo Oscuro */
+.dark-mode {
+  background-color: #23272e;
+  color: #f1f1f1;
+}
+
+.dark-mode th {
+  background: #2d323b;
+}
+
+.dark-mode td,
+.dark-mode th {
+  border-color: #555;
+}
+
+.dark-mode a {
+  color: hsl(210, 50%, 70%)
+}
+
+.dark-mode .modal-content {
+  background-color: #292d36;
+  color: #f1f1f1;
+}
+
+.dark-mode .tdModalClave {
+  background: #2d323b;
+  border-color: #555;
+}
+
+.dark-mode .tdModalValor {
+  border-color: #555;
+}
+
+
+/* Nuevas reglas para inputs y botones en modo oscuro */
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  background-color: #313640;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+.dark-mode button {
+  background-color: #3a3f4b;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+.dark-mode button:hover {
+  background-color: #50576a;
+  color: #fff;
+}
+
+.dark-mode #div2 {
+  background-color: #313640;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+  z-index: 999;
+}
+
+.tooltip .tooltiptext {
+  z-index: 9999;
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  bottom: 125%; /* arriba del ícono */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 13px;
+  text-wrap-style: stable;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* flecha debajo del tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
