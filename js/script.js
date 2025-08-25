@@ -100,7 +100,6 @@ const tbody = document.querySelector("#tablaLogs tbody");
 const totalResultadosEl = document.getElementById("totalResultados");
 const errorMsg = document.getElementById("errorMsg");
 
-
 const MAX_INPUT_LENGTH = 32;
 
 [autorInput, moderadorInput].forEach(input => {

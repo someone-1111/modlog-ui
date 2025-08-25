@@ -313,6 +313,7 @@ a.sin-estilo:hover {
   opacity: 1;
 }
 
+
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
