@@ -42,22 +42,8 @@ let descriptionMap = {
   'wikirevise': 'Página de la wiki modificada',
 };
 
-const btn = document.getElementById('btn-toggle-dark');
-
-if (localStorage.getItem('modoOscuro') === 'true') {
-  document.body.classList.add('dark-mode');
-  btn.textContent = '🌞';
-}
 
 
-// Botón modo oscuro
-btn.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-  const modoOscuroActivo = document.body.classList.contains('dark-mode');
-  localStorage.setItem('modoOscuro', modoOscuroActivo);
-
-  btn.textContent = modoOscuroActivo ? '🌞' : '🌙';
-});
 
 
 const btnBuscar = document.getElementById('btnBuscar');
@@ -239,15 +225,14 @@ async function cargarDatos(append = false) {
     const frag = document.createDocumentFragment();
     console.log("cantidad en data:" + data.results.length);
     largo = data.results.length;
-    
+
 
     data.results.forEach(item => {
       const tr = document.createElement("tr");
+      tr._item = item; // Guarda el item en la fila para acceso global
 
       // Columna: acción
       const tdAction = document.createElement("td");
-      // tdAction.textContent = item.action || "";
-
       const tooltipAction = document.createElement("span");
       tooltipAction.classList.add("tooltip");
       tooltipAction.textContent = item.action || "";
@@ -256,61 +241,69 @@ async function cargarDatos(append = false) {
       tooltipTextAction.textContent = descriptionMap[item.action] || "";
       tooltipAction.appendChild(tooltipTextAction);
       tdAction.appendChild(tooltipAction);
-        tr.appendChild(tdAction);
+      tr.appendChild(tdAction);
 
       // Columna: autor con enlace
       const tdAuthor = document.createElement("td");
       if (item.target_author) {
-        const a = document.createElement("a");
-        a.href = `https://reddit.com/user/${encodeURIComponent(item.target_author)}`;
-        a.textContent = item.target_author;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        tdAuthor.appendChild(a);
-        a.classList.add("sin-estilo");
+        const enlace = document.createElement("a");
+        enlace.className = "sin-estilo";
+        enlace.href = "https://reddit.com/user/" + item.target_author;
+        enlace.target = "_blank";
+        enlace.textContent = item.target_author;
+        tdAuthor.appendChild(enlace);
       } else {
         tdAuthor.textContent = "";
       }
       tr.appendChild(tdAuthor);
 
       // Columna: moderador
-
       const tdMod = document.createElement("td");
       tdMod.textContent = item.mod || "";
       tr.appendChild(tdMod);
 
       // Columna: fecha
-      const tdDate = document.createElement("td");
-      tdDate.textContent = item.created_utc
-        ? new Date(item.created_utc * 1000).toLocaleString("en-GB")
-        : "";
-      tr.appendChild(tdDate);
+      const tdFecha = document.createElement("td");
+      tdFecha.textContent = item.created_utc ? new Date(item.created_utc * 1000).toLocaleString("en-GB") : "";
+      tr.appendChild(tdFecha);
 
       // Columna: botón "Más"
-      const tdButton = document.createElement("td");
-      const btn = document.createElement("button");
-      btn.textContent = "Ver detalles";
-      btn.type = "button";
-      btn.addEventListener("click", () => abrirModalSeguro(item));
-      tdButton.appendChild(btn);
-      tr.appendChild(tdButton);
+      const tdMas = document.createElement("td");
+      const btnMas = document.createElement("button");
+      btnMas.textContent = "Ver detalles";
+      btnMas.addEventListener("click", () => toggleDetalleFila(tr, item));
+      tdMas.appendChild(btnMas);
+      tr.appendChild(tdMas);
+
+      // Columna: enlace
+      const tdEnlace = document.createElement("td");
+      if (item.target_permalink) {
+        const enlace = document.createElement("a");
+        enlace.href = "https://reddit.com" + item.target_permalink;
+        enlace.target = "_blank";
+        enlace.rel = "noopener noreferrer";
+        enlace.textContent = "Link";
+        tdEnlace.appendChild(enlace);
+      } else {
+        tdEnlace.textContent = "";
+      }
+      tr.appendChild(tdEnlace);
+
+
 
       frag.appendChild(tr);
+
+
       //contador++;
 
-      const tdLink = document.createElement("td");
-      if (item.target_permalink) {
-        const a = document.createElement("a");
-        a.href = "https://reddit.com" + item.target_permalink;
-        a.textContent = "Link";
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        tdLink.appendChild(a);
-      } else {
-        tdLink.textContent = "";
+      if (expandAll) {
+        // Espera a que la fila esté en el DOM antes de expandir
+        setTimeout(() => toggleDetalleFila(tr, item), 0);
       }
-      tr.appendChild(tdLink);
     });
+
+
+
 
 
     tbody.appendChild(frag);
@@ -333,192 +326,115 @@ async function cargarDatos(append = false) {
       endMessage.style.display = "none";
     }
     contador++;
+
   }
 }
-function abrirModalSeguro(item) {
-  const modal = document.getElementById("miModal");
-  console.log(modal);
-  const modalBody = modal.querySelector(".modal-content");
-  modalBody.innerHTML = ""; // limpiar contenido anterior
+
+function generarDetalleExpandidoSeguro(item) {
+  const container = document.createElement("div");
+  container.classList.add("divSeguro");
 
 
-
-  const div1 = document.createElement("div");
-  div1.setAttribute("id", "test");
-  div1.style.overflowX = "auto";
-  div1.style.marginBottom = "1rem";
-  modalBody.appendChild(div1);
-
-  const cerrar = document.createElement("span");
-  cerrar.innerHTML = "&times;";
-  cerrar.classList.add("cerrar");
-  cerrar.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-  modalBody.appendChild(cerrar);
-  const tituloModal = document.createElement("h2");
-  tituloModal.textContent = "Detalles del Log";
-  modalBody.appendChild(tituloModal);
   const tabla = document.createElement("table");
-  tabla.style.width = "100%";
-  tabla.style.borderCollapse = "collapse";
-  // Autor
 
-  if (item.target_author) {
+
+  function addRow(label, value, isHtml = false) {
     const tr = document.createElement("tr");
     const tdClave = document.createElement("td");
+    tdClave.className = "tdModalClave";
+    tdClave.textContent = label;
     const tdValor = document.createElement("td");
-    tdClave.classList.add("tdModalClave");
-    tdValor.classList.add("tdModalValor");
-    tdClave.textContent = `Autor`;
-    tdValor.textContent = `${item.target_author || ""}`;
+    tdValor.className = "tdModalValor";
+    if (isHtml) {
+      tdValor.appendChild(value);
+    } else {
+      tdValor.textContent = value;
+    }
     tr.appendChild(tdClave);
     tr.appendChild(tdValor);
     tabla.appendChild(tr);
-    div1.appendChild(tabla);
-  }
-  // Accion
-
-  if (item.action) {
-    const trAccion = document.createElement("tr");
-    const tdAccionClave = document.createElement("td");
-    const tdAccionValor = document.createElement("td");
-    tdAccionClave.classList.add("tdModalClave");
-    tdAccionValor.classList.add("tdModalValor");
-    tdAccionClave.textContent = `Accion`;
-    tdAccionValor.textContent = `${item.action || ""}` + ": " + (descriptionMap[item.action] || "");
-    trAccion.appendChild(tdAccionClave);
-    trAccion.appendChild(tdAccionValor);
-    tabla.appendChild(trAccion);
-    modalBody.appendChild(tabla);
-  }
-  // Fecha
-
-  if (item.created_utc) {
-
-    const trFecha = document.createElement("tr");
-    const tdFechaClave = document.createElement("td");
-    const tdFechaValor = document.createElement("td");
-    tdFechaClave.classList.add("tdModalClave");
-    tdFechaValor.classList.add("tdModalValor");
-    tdFechaClave.textContent = `Fecha`;
-    tdFechaValor.textContent = `${item.created_utc
-      ? new Date(item.created_utc * 1000).toLocaleString("en-GB")
-      : ""
-      }`;
-    trFecha.appendChild(tdFechaClave);
-    trFecha.appendChild(tdFechaValor);
-    tabla.appendChild(trFecha);
-    modalBody.appendChild(tabla);
   }
 
-  // Moderador
-
-  if (item.mod) {
-    const trMod = document.createElement("tr");
-    const tdModClave = document.createElement("td");
-    const tdModValor = document.createElement("td");
-    tdModClave.classList.add("tdModalClave");
-    tdModValor.classList.add("tdModalValor");
-    tdModClave.textContent = `Mod`;
-    tdModValor.textContent = `${item.mod || ""}`;
-    trMod.appendChild(tdModClave);
-    trMod.appendChild(tdModValor);
-    tabla.appendChild(trMod);
-    modalBody.appendChild(tabla);
-  }
-
-  // Detalle
-
-  if (item.details) {
-    const trDetalle = document.createElement("tr");
-    const tdDetalleClave = document.createElement("td");
-    const tdDetalleValor = document.createElement("td");
-    tdDetalleClave.classList.add("tdModalClave");
-    tdDetalleValor.classList.add("tdModalValor");
-    tdDetalleClave.textContent = `Detalle`;
-    tdDetalleValor.textContent = `${item.details || ""}`;
-    trDetalle.appendChild(tdDetalleClave);
-    trDetalle.appendChild(tdDetalleValor);
-    tabla.appendChild(trDetalle);
-    modalBody.appendChild(tabla);
-  }
-
-  // Titulo
-
-  if (item.target_title) {
-    const trTitle = document.createElement("tr");
-    const tdTitleClave = document.createElement("td");
-    const tdTitleValor = document.createElement("td");
-    tdTitleClave.classList.add("tdModalClave");
-    tdTitleValor.classList.add("tdModalValor");
-    tdTitleClave.textContent = `Titulo`;
-    tdTitleValor.textContent = `${item.target_title || ""}`;
-    trTitle.appendChild(tdTitleClave);
-    trTitle.appendChild(tdTitleValor);
-    tabla.appendChild(trTitle);
-    modalBody.appendChild(tabla);
-  }
-
-  // Descripcion
-
-  if (item.description) {
-    const trDescripcion = document.createElement("tr");
-    const tdDescripcionClave = document.createElement("td");
-    const tdDescripcionValor = document.createElement("td");
-    tdDescripcionClave.classList.add("tdModalClave");
-    tdDescripcionValor.classList.add("tdModalValor");
-    tdDescripcionClave.textContent = `Descripcion`;
-    tdDescripcionValor.textContent = `${item.description || ""}`;
-    trDescripcion.appendChild(tdDescripcionClave);
-    trDescripcion.appendChild(tdDescripcionValor);
-    tabla.appendChild(trDescripcion);
-    modalBody.appendChild(tabla);
-  }
-
-  // Permalink
-
+  if (item.target_author) addRow("Autor: ", item.target_author);
+  if (item.action) addRow("Acción: ", `${item.action}: ${descriptionMap[item.action] || ""}`);
+  if (item.created_utc) addRow("Fecha: ", new Date(item.created_utc * 1000).toLocaleString("en-GB"));
+  if (item.mod) addRow("Mod: ", item.mod);
+  if (item.details) addRow("Detalle: ", item.details);
+  if (item.target_title) addRow("Titulo: ", item.target_title);
+  if (item.description) addRow("Descripción: ", item.description);
   if (item.target_permalink) {
-    const trPermalink = document.createElement("tr");
-    const tdPermalinkClave = document.createElement("td");
-    const tdPermalinkValor = document.createElement("td");
-    tdPermalinkClave.classList.add("tdModalClave");
-    tdPermalinkValor.classList.add("tdModalValor");
-    //const pPermalink2 = document.createElement("p");
-    tdPermalinkClave.textContent = `Enlace`;
-    const base = "https://reddit.com"
-    const urlCompleta = base + item.target_permalink;
-    const pPermalink3 = document.createElement("a");
-    pPermalink3.href = urlCompleta;
-    pPermalink3.textContent = urlCompleta;
-    pPermalink3.target = "_blank";
-    pPermalink3.rel = "noopener noreferrer";
-    tdPermalinkValor.appendChild(pPermalink3);
-    trPermalink.appendChild(tdPermalinkClave);
-    trPermalink.appendChild(tdPermalinkValor);
-    tabla.appendChild(trPermalink);
-    modalBody.appendChild(tabla);
+    const enlace = document.createElement("a");
+    enlace.href = "https://reddit.com" + item.target_permalink;
+    enlace.textContent = item.target_permalink;
+    enlace.target = "_blank";
+    enlace.rel = "noopener noreferrer";
+    addRow("Enlace: ", enlace, true);
   }
-  // Texto (body)
+
+  container.appendChild(tabla);
+
   if (item.target_body) {
-    const tituloh3 = document.createElement("h3");
-    tituloh3.textContent = "Contenido";
-    modalBody.appendChild(tituloh3);
+    const h3 = document.createElement("h3");
+    h3.textContent = "Contenido";
+    container.appendChild(h3);
 
     const div2 = document.createElement("div");
-    div2.setAttribute("id", "div2");
-
-    const texto2 = item.target_body;
-    const regex1 = /!\[gif\]\(giphy\|(\w+)(?:\|.+)?\)/g;
-    const textoModificado = replaceGiphyMarkdown(texto2);
-
-    const html = marked.parse(textoModificado || "");
-    div2.textContent = texto2;
-
-    modalBody.appendChild(div2);
+    div2.classList.add("div2");
+    // Sanitiza el markdown y lo inserta como HTML seguro
+    const safeHtml = DOMPurify.sanitize(marked.parse(replaceGiphyMarkdown(item.target_body)));
+    div2.innerHTML = safeHtml;
+    container.appendChild(div2);
   }
-  modal.style.display = "block";
+
+  return container;
 }
+
+function toggleDetalleFila(tr, item) {
+  // Si ya existe la fila de detalles, la elimina (colapsa)
+  if (tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("detalle-expandido")) {
+    tr.parentNode.removeChild(tr.nextSibling);
+    return;
+  }
+  // Si no existe, la crea (expande)
+  const detalleTr = document.createElement("tr");
+  detalleTr.classList.add("detalle-expandido");
+  const detalleTd = document.createElement("td");
+  detalleTd.colSpan = tr.children.length;
+  detalleTd.appendChild(generarDetalleExpandidoSeguro(item));
+  detalleTr.appendChild(detalleTd);
+  tr.parentNode.insertBefore(detalleTr, tr.nextSibling);
+}
+
+let expandAll = false;
+
+const toggleExpandAllBtn = document.getElementById("toggleExpandAll");
+toggleExpandAllBtn.addEventListener("click", () => {
+  expandAll = !expandAll;
+  toggleExpandAllBtn.textContent = expandAll ? "Ocultar todos los detalles" : "Mostrar todos los detalles";
+  mostrarOcultarTodosExpandibles();
+});
+
+function mostrarOcultarTodosExpandibles() {
+  // Recorre todas las filas y expande/colapsa según el estado
+  document.querySelectorAll("#tablaLogs tbody tr").forEach(tr => {
+    // Solo filas principales (sin clase detalle-expandido)
+    if (!tr.classList.contains("detalle-expandido")) {
+      // Busca si ya está expandido
+      const next = tr.nextSibling;
+      const yaExpandido = next && next.classList && next.classList.contains("detalle-expandido");
+      if (expandAll && !yaExpandido) {
+        // Expande si no está expandido
+        toggleDetalleFila(tr, tr._item);
+      } else if (!expandAll && yaExpandido) {
+        // Colapsa si está expandido
+        toggleDetalleFila(tr, tr._item);
+      }
+    }
+  });
+}
+
+
+
 
 const observer = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting && !isLoading && hasMore) {

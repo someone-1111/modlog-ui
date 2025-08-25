@@ -11,10 +11,9 @@
 
 </head>
 
-<body>
+<body class="dark-mode">
     <div class="header-bar">
         <h1>Logs Moderación r/chile</h1>
-        <button id="btn-toggle-dark">🌙</button>
     </div>
     <div>
         <label for="autor">Usuario:</label>
@@ -38,8 +37,12 @@
         </label>
         
     </div>
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <button id="btnReset" style="margin-bottom:1rem;">Resetear</button>
+        <button id="toggleExpandAll" style="margin-bottom:1rem;">Mostrar todos los detalles</button>
+    </div>
 
-    <button id="btnReset">Resetear</button>
+    
 
     <div id="errorMsg" style="color: red; display: none;"></div>
 
@@ -62,9 +65,6 @@
         No hay más resultados
     </div>
 
-    <div id="miModal" class="modal">
-        <div id="modal-content" class="modal-content"></div>
-    </div>
 
     <div id="sentinela" style="height: 1px;"></div>
     <button id="botonForzar">Forzar carga</button>
