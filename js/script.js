@@ -76,6 +76,8 @@ let pagina = 1, porPagina = 25, isLoading = false, hasMore = true, contador = 0;
 let debounceTimer, lastRequestTime = 0;
 
 const url = "https://test-logs2.onrender.com/api/logs";
+const urlSearch = "https://test-logs2.onrender.com/api/search-comment";
+const urlSearchPost = "https://test-logs2.onrender.com/api/search-link";
 const loader = document.getElementById("loader");
 const autorInput = document.getElementById("autor");
 const moderadorInput = document.getElementById("moderador");
@@ -143,18 +145,6 @@ function renderMarkdown(md) {
   return DOMPurify.sanitize(marked.parse(md || ''));
 }
 
-//cerrar modal: click fuera del modal
-const modal2 = document.getElementById("miModal");
-window.addEventListener("click", e => {
-  if (e.target === modal2) {
-    modal2.style.display = "none";
-  }
-});
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && modal2.style.display === "block") {
-    modal2.style.display = "none";
-  }
-});
 
 function generarFila(clave, valorFormateado) {
   const etiqueta = etiquetas[clave] || clave;
@@ -334,9 +324,7 @@ function generarDetalleExpandidoSeguro(item) {
   const container = document.createElement("div");
   container.classList.add("divSeguro");
 
-
   const tabla = document.createElement("table");
-
 
   function addRow(label, value, isHtml = false) {
     const tr = document.createElement("tr");
@@ -380,10 +368,78 @@ function generarDetalleExpandidoSeguro(item) {
 
     const div2 = document.createElement("div");
     div2.classList.add("div2");
-    // Sanitiza el markdown y lo inserta como HTML seguro
     const safeHtml = DOMPurify.sanitize(marked.parse(replaceGiphyMarkdown(item.target_body)));
     div2.innerHTML = safeHtml;
     container.appendChild(div2);
+
+    // --- Agrega el botón especial ---
+    if (
+      item.action === "removecomment" &&
+      item.target_body.trim() === "[ Removed by Reddit ]" &&
+      item.target_permalink
+    ) {
+      // Extraer el id1 del permalink
+      const match = item.target_permalink.match(/\/comments\/[^\/]+\/[^\/]+\/([^\/]+)\//);
+      const id1 = match ? match[1] : null;
+
+      if (id1) {
+        const paramsSearch = new URLSearchParams();
+        paramsSearch.append("id",id1);
+        const urlSearch2 = new URL(urlSearch);
+        urlSearch2.search= paramsSearch.toString();
+
+        const btnSearch = document.createElement("button");
+        btnSearch.textContent = "Intentar recuperar";
+        btnSearch.style.marginTop = "1rem";
+        btnSearch.addEventListener("click", async () => {
+          btnSearch.disabled = true;
+          btnSearch.textContent = "Consultando...";
+          try {
+            const resp = await fetch(urlSearch2.toString());
+            const data = await resp.json();
+            if (resp.ok && data && data.result) {
+              // alert("Respuesta:\n" + JSON.stringify(data.result, null, 2));
+              // console.log(data.result.data[0].body);
+              div2.innerHTML = div2.innerHTML + "\n\n<hr>\n\n"+ DOMPurify.sanitize(marked.parse(replaceGiphyMarkdown(data.result.data[0].body)));;
+              
+              btnSearch.style.display="none";
+              
+
+              const container2 = btnSearch.closest(".divSeguro");
+
+              if (!container2) return;
+
+              // Buscar la primera tabla dentro de ese div
+              const table = container2.querySelector("table");
+              if (!table) return;
+
+              // Primer <tr> de la tabla
+              const firstRow = table.querySelector("tr");
+              if (!firstRow) return;
+
+              // Segundo <td> de esa fila
+              const secondTd = firstRow.querySelectorAll("td")[1];
+              if (!secondTd) return;
+
+              if (secondTd.textContent === "[deleted]"){
+                // Modificar el contenido
+                secondTd.textContent += " = " + data.result.data[0].author;
+                
+            }
+            } else {
+              alert("No se encontró información, intente mas tarde");
+            }
+          } catch (e) {
+            alert("Error consultando, intente mas tarde.");
+          }
+          btnSearch.disabled = false;
+          btnSearch.textContent = "Consultar Search";
+        });
+        container.appendChild(btnSearch);
+      }
+    }
+    
+    // --- Fin botón especial ---
   }
 
   return container;
@@ -432,9 +488,6 @@ function mostrarOcultarTodosExpandibles() {
     }
   });
 }
-
-
-
 
 const observer = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting && !isLoading && hasMore) {
