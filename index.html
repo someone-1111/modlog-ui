@@ -3,10 +3,11 @@
 
 <head>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Logs Moderación Reddit (Carga Infinita)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -31,31 +32,33 @@
             <span class="tooltip">
                 <i style="color: #007bff;">&#9432;</i>
                 <span class="tooltiptext">
-                    Si activas esta opción, se excluirán todos los registros de los moderadores "AutoModerator", "EmpleadoEstatalBot" y "floodassistant".
+                    Si activas esta opción, se excluirán todos los registros de los moderadores "AutoModerator",
+                    "EmpleadoEstatalBot" y "floodassistant".
                 </span>
             </span>
         </label>
-        
+
     </div>
     <div style="display: flex; justify-content: space-between; width: 100%;">
         <button id="btnReset" style="margin-bottom:1rem;">Resetear</button>
         <button id="toggleExpandAll" style="margin-bottom:1rem;">Mostrar todos los detalles</button>
     </div>
 
-    
+
 
     <div id="errorMsg" style="color: red; display: none;"></div>
 
     <table id="tablaLogs">
         <thead>
             <tr>
-                <th>Acción</th>
-                <th>Autor</th>
-                <th>Moderador</th>
-                <th>Fecha</th>
-                <th>Mas</th>
-                <th>Enlace</th>
+                <th colspan="2">Acción</th>
+                <th rowspan="2">Autor</th>
+                <th rowspan="2">Moderador</th>
+                <th rowspan="2">Fecha</th>
+                <th rowspan="2">Mas</th>
+                <th rowspan="2">Enlace</th>
             </tr>
+
         </thead>
         <tbody></tbody>
     </table>
@@ -69,12 +72,9 @@
     <div id="sentinela" style="height: 1px;"></div>
     <button id="botonForzar">Forzar carga</button>
 
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-        <button>Botón Izquierdo</button>
-        <button>Botón Derecho</button>
-    </div>
- 
-    
+
+
+
     <script src="js/script.js" defer></script>
 </body>
 

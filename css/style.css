@@ -313,18 +313,25 @@ a.sin-estilo:hover {
 
 .detalle-expandido td {
   background: #f9f9f9;
-  
-  width: 90%;
  
   position: relative;
   margin: auto;
 }
 
 .divSeguro {
-  width: 100%;
+  width: 96%;           /* Menos ancho que la tabla principal */
+  margin: 0 auto 18px auto; /* Centrado y separación inferior */
   box-sizing: border-box;
   overflow-x: auto;
-  
+  background: #2c313a;
+}
+
+@media (max-width: 768px) {
+  .divSeguro {
+    width: 99%;
+    margin: 0 auto 12px auto;
+    border-radius: 8px;
+  }
 }
 
 .divSeguro table {
@@ -342,14 +349,11 @@ a.sin-estilo:hover {
 .divSeguro th,
 .divSeguro td {
   padding: 10px 14px;
-  border-bottom: 1px solid #e0e0e0;
   text-align: left;
   font-size: 1rem;
 }
 
-.divSeguro tr:last-child td {
-  border-bottom: none;
-}
+
 
 .divSeguro .tdModalClave {
   background: #f5f6fa;
@@ -369,7 +373,7 @@ a.sin-estilo:hover {
 .divSeguro h3 {
   margin: 1rem 0 0.5rem 0;
   font-size: 1.1rem;
-  color: #007bff;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -397,7 +401,7 @@ a.sin-estilo:hover {
 }
 
 .dark-mode .divSeguro .tdModalClave {
-  background: #2d323b;
+  background: #23272e;
   color: #f1f1f1;
   border-right: 1px solid #555;
 }
@@ -408,12 +412,10 @@ a.sin-estilo:hover {
 }
 
 .dark-mode .divSeguro th,
-.dark-mode .divSeguro td {
-  border-bottom: 1px solid #555;
-}
+
 
 .dark-mode .divSeguro h3 {
-  color: #4ea1ff;
+  color: #ffffff;
 }
 
 .dark-mode .div2{
@@ -550,10 +552,7 @@ a {
   color: #f1f1f1;
 }
 
-.divSeguro th,
-.divSeguro td {
-  border-bottom: 1px solid #555;
-}
+
 
 .divSeguro h3 {
   color: #4ea1ff;
@@ -564,6 +563,27 @@ a {
   color: #f1f1f1;
   border: 1px solid #555;
   margin-bottom:15px;
+  box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
 }
 
 /* El resto de tu CSS permanece igual para responsive, tooltips, spoilers, etc. */
+
+.detalle-expandido-anim {
+  transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+}
+
+.detalle-expandido-anim.activo {
+  max-height: 1000px; /* suficiente para el contenido */
+  opacity: 1;
+}
+.material-icons {
+  font-feature-settings: normal;
+  vertical-align: middle;
+  display: inline-block;
+  min-width: 22px;
+  min-height: 22px;
+}
+

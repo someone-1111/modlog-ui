@@ -22,6 +22,7 @@ let descriptionMap = {
   'spamcomment': 'Comentario eliminado por spam.',
   'spamlinkcomment': 'Comentario eliminado por spam.',
   'spamlink': 'Publicación eliminada por spam.',
+  'spoiler': 'Publicación marcada como Spoiler',
   'sticky': 'Fijado',
   'stickycomment': 'Comentario de moderador fijado.',
   'stickydistinguishcomment': 'Comentario de moderador fijado y distinguido.',
@@ -42,8 +43,86 @@ let descriptionMap = {
   'wikirevise': 'Página de la wiki modificada',
 };
 
+/* let iconMap = {
+  'addremovalreason': 'remove_circle_outline',
+  'acceptmoderatorinvite': 'how_to_reg',
+  'approvecomment': 'check_circle',
+  'approvelink': 'check_circle',
+  'banuser': 'block',
+  'distinguishcomment': 'star',
+  'distinguishpost': 'star',
+  'editflair': 'edit',
+  'ignorereports': 'visibility_off',
+  'invitemoderator': 'person_add',
+  'lock': 'lock',
+  'marknsfw': 'warning',
+  'markoriginalcontent': 'copyright',
+  'removecomment': 'delete',
+  'removelink': 'delete',
+  'removelinkauto': 'delete_forever',
+  'removemoderator': 'person_remove',
+  'setsuggestedsort': 'sort',
+  'spamcomment': 'report',
+  'spamlinkcomment': 'report',
+  'spamlink': 'report',
+  'sticky': 'push_pin',
+  'stickycomment': 'push_pin',
+  'stickydistinguishcomment': 'star',
+  'stickydistinguishpost': 'star',
+  'stickypost': 'push_pin',
+  'tempbanend': 'timer_off',
+  'unbanuser': 'lock_open',
+  'unignorereports': 'visibility',
+  'unlock': 'lock_open',
+  'unmuteuser': 'volume_up',
+  'unspoiler': 'visibility',
+  'unsticky': 'push_pin',
+  'unstickycomment': 'push_pin',
+  'unstickypost': 'push_pin',
+  'wikipermlevel': 'security',
+  'wikirevise': 'edit',
+}; */
 
-
+let iconMap = {
+    'addremovalreason':'receipt',
+    'acceptmoderatorinvite': 'how_to_reg',
+    'approvecomment': 'add_comment',
+    'approvelink': 'done_all',
+    'banuser': 'gavel',
+    'community_widgets': 'border_color',
+    'distinguishcomment': 'star',
+    'distinguishpost': 'star',
+    'editflair': 'rate_review',
+    'ignorereports': 'report_off',
+    'invitemoderator': 'contact_mail',
+    'lock': 'lock',
+    'marknsfw': 'no_adult_content',
+    'markoriginalcontent': 'folder_special',
+    'removecomment': 'speaker_notes_off',
+    'removelink': 'delete',
+    'removelinkauto': 'delete',
+    'removemoderator': 'sentiment_very_dissatisfied',
+    'setsuggestedsort': 'sort',
+    'spamcomment': 'report',
+    'spamlinkcomment': 'delete_outline',
+    'spamlinkpost': 'delete_sweep',
+    'sticky':'push_pin',
+    'stickycomment': 'location_on',
+    'stickydistinguishcomment': 'local_activity',
+    'stickydistinguishpost': 'folder_special',
+    'stickypost': 'pin_drop',
+    'tempbanend': 'how_to_reg',
+    'unbanuser': 'how_to_reg',
+    'unignorereportscomment': 'assignment_turned_in',
+    'unignorereportspost': 'assignment_turned_in',
+    'unmuteuser': 'mobile_friendly',
+    'unlock': 'lock_open',
+    'unspoiler': 'visibility',
+    'unstickycomment': 'location_off',
+    'unstickypost': 'location_off',
+    'wikipermlevel': 'perm_contact_calendar',
+    'wikirevise': 'description'
+  };
 
 
 const btnBuscar = document.getElementById('btnBuscar');
@@ -148,7 +227,7 @@ function renderMarkdown(md) {
 
 function generarFila(clave, valorFormateado) {
   const etiqueta = etiquetas[clave] || clave;
-  return `<tr><td style="font-weight: bold; padding: 6px; border: 1px solid #ccc; background:#f0f0f0">${etiqueta}</td><td style="padding: 6px; border: 1px solid #ccc;">${valorFormateado}</td></tr>`;
+  return `<tr><td style="font-weight: bold; padding: 6px;  background:#f0f0f0">${etiqueta}</td><td style="padding: 6px; ">${valorFormateado}</td></tr>`;
 }
 
 function formatearValor(clave, valor) {
@@ -221,14 +300,35 @@ async function cargarDatos(append = false) {
       const tr = document.createElement("tr");
       tr._item = item; // Guarda el item en la fila para acceso global
 
-      // Columna: acción
+      // Columna: icono
+      const tdIcon = document.createElement("td");
+      tdIcon.style.width = "36px";
+      tdIcon.style.textAlign = "center";
+      tdIcon.style.verticalAlign = "middle";
+      tdIcon.style.borderRight = "0px";
+      const iconName = iconMap[item.action] || "help_outline";
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "material-icons";
+      iconSpan.textContent = iconName;
+      iconSpan.style.fontSize = "22px";
+      iconSpan.style
+      // iconSpan.style.color = "#4ea1ff";
+      tdIcon.appendChild(iconSpan);
+      tr.appendChild(tdIcon);
+
+      // Columna: acción (solo texto y tooltip)
       const tdAction = document.createElement("td");
-      const tooltipAction = document.createElement("span");
-      tooltipAction.classList.add("tooltip");
-      tooltipAction.textContent = item.action || "";
+      tdAction.style.textAlign = "center";
+      tdAction.style.verticalAlign = "middle";
+      tdAction.style.borderLeft = "0px";
+      const actionText = document.createElement("span");
+      actionText.textContent = item.action || "";
       const tooltipTextAction = document.createElement("span");
       tooltipTextAction.classList.add("tooltiptext");
       tooltipTextAction.textContent = descriptionMap[item.action] || "";
+      const tooltipAction = document.createElement("span");
+      tooltipAction.classList.add("tooltip");
+      tooltipAction.appendChild(actionText);
       tooltipAction.appendChild(tooltipTextAction);
       tdAction.appendChild(tooltipAction);
       tr.appendChild(tdAction);
@@ -343,20 +443,20 @@ function generarDetalleExpandidoSeguro(item) {
     tabla.appendChild(tr);
   }
 
-  if (item.target_author) addRow("Autor: ", item.target_author);
-  if (item.action) addRow("Acción: ", `${item.action}: ${descriptionMap[item.action] || ""}`);
-  if (item.created_utc) addRow("Fecha: ", new Date(item.created_utc * 1000).toLocaleString("en-GB"));
-  if (item.mod) addRow("Mod: ", item.mod);
-  if (item.details) addRow("Detalle: ", item.details);
-  if (item.target_title) addRow("Titulo: ", item.target_title);
-  if (item.description) addRow("Descripción: ", item.description);
+  if (item.target_author) addRow("Autor", item.target_author);
+  if (item.action) addRow("Acción", `${descriptionMap[item.action] || ""}`);
+  if (item.description) addRow("Descripción", item.description);
+  if (item.details) addRow("Detalle", item.details);
+  if (item.created_utc) addRow("Fecha", new Date(item.created_utc * 1000).toLocaleString("en-GB"));
+  if (item.mod) addRow("Mod", item.mod);
+  if (item.target_title) addRow("Titulo", item.target_title);
   if (item.target_permalink) {
     const enlace = document.createElement("a");
     enlace.href = "https://reddit.com" + item.target_permalink;
     enlace.textContent = item.target_permalink;
     enlace.target = "_blank";
     enlace.rel = "noopener noreferrer";
-    addRow("Enlace: ", enlace, true);
+    addRow("Enlace", enlace, true);
   }
 
   container.appendChild(tabla);
@@ -446,19 +546,38 @@ function generarDetalleExpandidoSeguro(item) {
 }
 
 function toggleDetalleFila(tr, item) {
-  // Si ya existe la fila de detalles, la elimina (colapsa)
+  // Si ya existe la fila de detalles, la elimina (colapsa con animación)
   if (tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("detalle-expandido")) {
-    tr.parentNode.removeChild(tr.nextSibling);
+    const detalleTr = tr.nextSibling;
+    const animDiv = detalleTr.querySelector('.detalle-expandido-anim');
+    if (animDiv) {
+      animDiv.classList.remove('activo');
+      setTimeout(() => {
+        if (detalleTr.parentNode) detalleTr.parentNode.removeChild(detalleTr);
+      }, 400);
+    } else {
+      detalleTr.parentNode.removeChild(detalleTr);
+    }
     return;
   }
-  // Si no existe, la crea (expande)
+  // Si no existe, la crea (expande con animación)
   const detalleTr = document.createElement("tr");
   detalleTr.classList.add("detalle-expandido");
   const detalleTd = document.createElement("td");
   detalleTd.colSpan = tr.children.length;
-  detalleTd.appendChild(generarDetalleExpandidoSeguro(item));
+
+  // Envuelve el contenido en un div animado
+  const animDiv = document.createElement("div");
+  animDiv.className = "detalle-expandido-anim";
+  animDiv.appendChild(generarDetalleExpandidoSeguro(item));
+  detalleTd.appendChild(animDiv);
   detalleTr.appendChild(detalleTd);
   tr.parentNode.insertBefore(detalleTr, tr.nextSibling);
+
+  // Activa la animación en el siguiente tick
+  setTimeout(() => {
+    animDiv.classList.add('activo');
+  }, 10);
 }
 
 let expandAll = false;
