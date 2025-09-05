@@ -1,69 +1,37 @@
+/* Base */
 body {
   font-family: Arial, sans-serif;
   padding: 1.5rem;
-  background: #f9f9f9;
+  background: #23272e;
+  color: #f1f1f1;
 }
 
 label,
 input,
 select,
 button {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
-  min-width: 300px; /* Ajusta según tus columnas mínimas */
+  min-width: 300px;
+  background: #23272e;
+  color: #f1f1f1;
 }
 
 th,
 td {
   padding: 8px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
   text-align: center;
 }
 
 th {
-  background: #eee;
-}
-
-
-#test table td {
-  text-align: left;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 1% auto;
-  padding: 1.5rem;
-  border: 1px solid #888;
-  width: 60%;
-  border-radius: 8px;
-}
-
-.cerrar {
-  float: right;
-  font-size: 50px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #aaa;
-}
-
-.cerrar:hover {
-  color: black;
+  background: #2d323b;
+  color: #f1f1f1;
 }
 
 a.sin-estilo {
@@ -85,31 +53,33 @@ a.sin-estilo:hover {
 
 .tdModalClave {
   font-weight: bold;
-  border: 1px solid #ccc;
-  background: #f0f0f0;
+  border: 1px solid #555;
+  background: #2d323b;
   text-align: left;
   margin: 0;
-  
-
 }
 
 .tdModalValor {
   text-align: left;
   margin: 0;
+  background: #23272e;
+  color: #f1f1f1;
 }
 
 .div2 {
-  background: #f9f9f9;
-  border: 1px solid #ccc;
+  background: #23272e;
+  border: 1px solid #555;
   padding: 1rem;
   border-radius: 4px;
   max-width: 100%;
   max-height: 300px;
-  overflow-x: auto;
-  overflow-y: auto;
   word-break: break-word;
-  box-sizing: border-box;
-  text-align:left;
+  text-align: left;
+  color: #f1f1f1;
+  margin-bottom: 15px;
+  box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
+  overflow-y: auto;
+  /* Elimina overflow-x/y aquí */
 }
 
 .div2 p, .div2 pre, .div2 code {
@@ -126,49 +96,67 @@ a.sin-estilo:hover {
   margin-bottom: 1.5rem;
 }
 
-#btn-toggle-dark {
-  padding: 2px 6px;
-  font-size: 1.1rem;
-  border-radius: 4px;
-  margin: 0;
-  min-width: 32px;
-  min-height: 32px;
-  width: 32px;
-  height: 32px;
-  line-height: 1;
-  background: #eee;
-  border: 1px solid #ccc;
-  transition: background 0.2s;
+.divSeguro {
+  width: 96%;
+  margin: 0 auto 18px auto;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 12px;
+  background-color: inherit;
+  /* Elimina overflow-x/y aquí */
 }
 
-#btn-toggle-dark:focus {
-  outline: 2px solid #888;
-}
-
-.dark-mode #btn-toggle-dark {
-  background: #3a3f4b;
+.divSeguro table {
+  width: 100%;
+  min-width: 400px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.5rem 0 1rem 0;
+  background: #23272e;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  overflow: hidden;
   color: #f1f1f1;
-  border: 1px solid #555;
 }
 
-/* 📱 Ajustes para pantallas pequeñas */
+.divSeguro th,
+.divSeguro td {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 1rem;
+  border-bottom: 1px solid #555;
+}
+
+.divSeguro .tdModalClave {
+  background: #2d323b;
+  color: #f1f1f1;
+  width: 10%;
+  border-right: 1px solid #555;
+  border-radius: 0;
+}
+
+.divSeguro .tdModalValor {
+  background: #23272e;
+  color: #f1f1f1;
+  border-radius: 0;
+}
+
+.divSeguro h3 {
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #4ea1ff;
+  font-weight: 600;
+}
 
 @media (max-width: 768px) {
   body {
     padding: 0.5rem;
     font-size: 0.9rem;
   }
-
   h1 {
     font-size: 1.2rem;
     text-align: center;
     margin-bottom: 1rem;
   }
-
   div>label,
   div>input,
   div>select,
@@ -177,250 +165,52 @@ a.sin-estilo:hover {
     width: 100%;
     margin: 1% auto;
   }
-
   table {
     font-size: 0.8rem;
-    display: block;
-    overflow-x: auto;
+    box-sizing: border-box;
+    /* Elimina overflow-x/y aquí */
   }
-
   th,
   td {
     padding: 6px;
   }
-
   button {
     padding: 0.6rem;
     font-size: 0.6rem;
   }
-
-  .modal-content {
-    width: 90%;
-    margin: 5% auto;
-    padding: 0.5rem;
-  }
-
-  table, .divSeguro, .div2 {
-    font-size: 0.9rem;
-    
-    box-sizing: border-box;
-  }
-  .div2 {
-    padding: 0.5rem;
-    max-height: 200px;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-bar {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  #btn-toggle-dark {
-    font-size: 1rem;
-    min-width: 28px;
-    min-height: 28px;
-    width: 28px;
-    height: 28px;
-    padding: 1px 4px;
-  }
-
-  .header-bar h1 {
-    font-size: 1rem;
-    margin-bottom: 0;
-  }
-}
-/*
-@media (max-width: 480px) {
-  table {
-    font-size: 0.75rem;
-  }
-
-  th,
-  td {
-    padding: 4px;
-  }
-}
-
-*/
-
-/* 🎨 Modo Oscuro */
-.dark-mode {
-  background-color: #23272e;
-  color: #f1f1f1;
-}
-
-.dark-mode th {
-  background: #2d323b;
-}
-
-.dark-mode td,
-.dark-mode th {
-  border-color: #555;
-}
-
-.dark-mode a {
-  color: hsl(210, 50%, 70%)
-}
-
-.dark-mode .modal-content {
-  background-color: #292d36;
-  color: #f1f1f1;
-}
-
-.dark-mode .tdModalClave {
-  background: #2d323b;
-  border-color: #555;
-}
-
-.dark-mode .tdModalValor {
-  border-color: #555;
-}
-
-
-/* Nuevas reglas para inputs y botones en modo oscuro */
-.dark-mode input,
-.dark-mode select,
-.dark-mode textarea {
-  background-color: #313640;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-
-.dark-mode button {
-  background-color: #3a3f4b;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-
-.dark-mode button:hover {
-  background-color: #50576a;
-  color: #fff;
-}
-
-.dark-mode #div2 {
-  background-color: #313640;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-
-.dark-mode .detalle-expandido td{
-  background: #2d323b;
-}
-
-.detalle-expandido td {
-  background: #f9f9f9;
- 
-  position: relative;
-  margin: auto;
-}
-
-.divSeguro {
-  width: 96%;           /* Menos ancho que la tabla principal */
-  margin: 0 auto 18px auto; /* Centrado y separación inferior */
-  box-sizing: border-box;
-  overflow-x: auto;
-  background: #2c313a;
-}
-
-@media (max-width: 768px) {
   .divSeguro {
     width: 99%;
     margin: 0 auto 12px auto;
     border-radius: 8px;
+    /* Elimina overflow-x/y aquí */
   }
-}
-
-.divSeguro table {
-  width: 100%;
-  min-width: 400px; /* Opcional: ancho mínimo para la tabla de detalles */
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 0.5rem 0 1rem 0;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.divSeguro th,
-.divSeguro td {
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 1rem;
-}
-
-
-
-.divSeguro .tdModalClave {
-  background: #f5f6fa;
-  font-weight: bold;
-  color: #333;
-  width: 10%; 
-  border-right: 1px solid #e0e0e0;
-  border-radius: 0;
-}
-
-.divSeguro .tdModalValor {
-  background: #fff;
-  color: #222;
-  border-radius: 0;
-}
-
-.divSeguro h3 {
-  margin: 1rem 0 0.5rem 0;
-  font-size: 1.1rem;
-  color: #ffffff;
-  font-weight: 600;
-}
-
-@media (max-width: 768px) {
   .divSeguro table,
   .divSeguro th,
   .divSeguro td {
     font-size: 0.95rem;
-    padding: 7px 8px;
   }
   .divSeguro h3 {
     font-size: 1rem;
   }
+  .div2 {
+    padding: 0.5rem;
+    max-height: 200px;
+    /* Elimina overflow-x/y aquí */
+  }
 }
 
-/* Modo oscuro */
-
-/* .dark-mode .divSeguro {
-  background:#23272e;
-} */
-
-.dark-mode .divSeguro table {
-  background: #23272e;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+.material-icons {
+  font-feature-settings: normal;
+  vertical-align: middle;
+  display: inline-block;
+  min-width: 22px;
+  min-height: 22px;
+  color: white;
 }
 
-.dark-mode .divSeguro .tdModalClave {
-  background: #23272e;
-  color: #f1f1f1;
-  border-right: 1px solid #555;
-}
-
-.dark-mode .divSeguro .tdModalValor {
-  background: #23272e;
-  color: #f1f1f1;
-}
-
-.dark-mode .divSeguro th,
-
-
-.dark-mode .divSeguro h3 {
-  color: #ffffff;
-}
-
-.dark-mode .div2{
-  background:#23272e;
-  color: #f1f1f1;
+ul {
+  margin: 0;
+  padding: 0;
 }
 
 .tooltip {
@@ -439,7 +229,7 @@ a.sin-estilo:hover {
   border-radius: 6px;
   padding: 8px;
   position: absolute;
-  bottom: 125%; /* arriba del ícono */
+  bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -453,19 +243,16 @@ a.sin-estilo:hover {
   opacity: 1;
 }
 
-
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
-  top: 100%; /* flecha debajo del tooltip */
+  top: 100%;
   left: 50%;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
   border-color: #333 transparent transparent transparent;
 }
-
-/* test */
 
 /* Spoilers */
 .md-spoiler {
@@ -488,7 +275,7 @@ blockquote {
 
 /* Código */
 code {
-  background: #f6f8fa;
+  background: #313640;
   padding: 2px 4px;
   border-radius: 3px;
   font-family: monospace;
@@ -496,7 +283,6 @@ code {
 pre code {
   display: block;
   padding: 8px;
-  overflow-x: auto;
 }
 
 /* Imágenes */
@@ -508,82 +294,74 @@ pre code {
   border-radius: 6px;
 }
 
-/* Elimina el botón de modo claro/oscuro */
-#btn-toggle-dark,
-#btn-toggle-dark:focus,
-.dark-mode #btn-toggle-dark {
-  display: none !important;
-}
-
-/* Modo oscuro como tema principal */
-body,
-.dark-mode {
-  background-color: #23272e;
-  color: #f1f1f1;
-}
-
-th {
-  background: #2d323b;
-  color: #f1f1f1;
-}
-
-td,
-th {
-  border-color: #555;
-}
-
-a {
-  color: hsl(210, 50%, 70%);
-}
-
-.divSeguro table {
-  background: #23272e;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.divSeguro .tdModalClave {
-  background: #2d323b;
-  color: #f1f1f1;
-  border-right: 1px solid #555;
-}
-
-.divSeguro .tdModalValor {
-  background: #23272e;
-  color: #f1f1f1;
-}
-
-
-
-.divSeguro h3 {
-  color: #4ea1ff;
-}
-
-.div2 {
-  background: #23272e;
-  color: #f1f1f1;
-  border: 1px solid #555;
-  margin-bottom:15px;
-  box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
-}
-
-/* El resto de tu CSS permanece igual para responsive, tooltips, spoilers, etc. */
-
+/* Animación expandido */
 .detalle-expandido-anim {
   transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s;
   overflow: hidden;
   max-height: 0;
   opacity: 0;
 }
-
 .detalle-expandido-anim.activo {
-  max-height: 1000px; /* suficiente para el contenido */
+  max-height: 1000px;
   opacity: 1;
 }
-.material-icons {
-  font-feature-settings: normal;
-  vertical-align: middle;
-  display: inline-block;
-  min-width: 22px;
-  min-height: 22px;
+
+@media (min-width: 768px) {
+  ul {
+    list-style-type: none;
+    overflow: hidden;
+    background-color: #23272e;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  li {
+    float: left;
+  }
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  html {
+    scroll-padding-top: 76px;
+  }
 }
 
+button {
+  background-color: #3a3f4b;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+button:hover {
+  background-color: #50576a;
+  color: #fff;
+}
+
+a.sin-estilo {
+  color:hsl(210, 50%, 70%);
+  text-decoration: none;
+}
+
+a.sin-estilo:hover {
+  text-decoration: underline;
+  color: #999;
+}
+
+input,
+select,
+textarea {
+  background-color: #313640;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+a {
+  color: hsl(210, 50%, 70%);
+}
+
+.detalle-expandido td {
+  background: #2d323b;
+}

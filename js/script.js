@@ -5,7 +5,7 @@ let descriptionMap = {
   'approvelink': 'Publicación aprobada.',
   'banuser': 'Usuario(a) baneado(a).',
   'distinguishcomment': 'Comentario de moderador distinguido.',
-  'distinguishpost': 'Publicación distinguida.',
+  'distinguish': 'Publicación o comentario distinguido.',
   'editflair': 'Etiqueta de publicación editada.',
   'ignorereports': 'Reportes ignorados',
   'ignorereportscomment': 'Reportes del comentario de ignorados.',
@@ -90,7 +90,7 @@ let iconMap = {
     'approvelink': 'done_all',
     'banuser': 'gavel',
     'community_widgets': 'border_color',
-    'distinguishcomment': 'star',
+    'distinguish': 'star',
     'distinguishpost': 'star',
     'editflair': 'rate_review',
     'ignorereports': 'report_off',
@@ -388,7 +388,7 @@ async function cargarDatos(append = false) {
 
       if (expandAll) {
         // Espera a que la fila esté en el DOM antes de expandir
-        setTimeout(() => toggleDetalleFila(tr, item), 0);
+        setTimeout(() => toggleDetalleFila(tr, item, false), 0);
       }
     });
 
@@ -545,7 +545,7 @@ function generarDetalleExpandidoSeguro(item) {
   return container;
 }
 
-function toggleDetalleFila(tr, item) {
+function toggleDetalleFila(tr, item, scroll=true) {
   // Si ya existe la fila de detalles, la elimina (colapsa con animación)
   if (tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("detalle-expandido")) {
     const detalleTr = tr.nextSibling;
@@ -577,6 +577,10 @@ function toggleDetalleFila(tr, item) {
   // Activa la animación en el siguiente tick
   setTimeout(() => {
     animDiv.classList.add('activo');
+    if (scroll) {
+      tr.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    }
   }, 10);
 }
 
@@ -599,10 +603,10 @@ function mostrarOcultarTodosExpandibles() {
       const yaExpandido = next && next.classList && next.classList.contains("detalle-expandido");
       if (expandAll && !yaExpandido) {
         // Expande si no está expandido
-        toggleDetalleFila(tr, tr._item);
+        toggleDetalleFila(tr, tr._item,false);
       } else if (!expandAll && yaExpandido) {
         // Colapsa si está expandido
-        toggleDetalleFila(tr, tr._item);
+        toggleDetalleFila(tr, tr._item,false);
       }
     }
   });

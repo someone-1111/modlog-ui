@@ -16,34 +16,36 @@
     <div class="header-bar">
         <h1>Logs Moderación r/chile</h1>
     </div>
-    <div>
-        <label for="accion">Acción:</label>
-        <select id="accion">
-            <option value="">Todas</option>
-        </select>
-        <label for="autor">Usuario:</label>
-        <input type="text" id="autor" placeholder="Buscar por usuario" />
-        <label for="moderador">Moderador:</label>
-        <input type="text" id="moderador" placeholder="Buscar por moderador">
-        <button id="btnBuscar">Buscar</button>
-        <label>
-            <input type="checkbox" id="ignorarModsCheckbox">
-            Ignorar acciones de bots
-            <span class="tooltip">
-                <i style="color: #007bff;">&#9432;</i>
-                <span class="tooltiptext">
-                    Si activas esta opción, se excluirán todos los registros de los moderadores "AutoModerator",
-                    "EmpleadoEstatalBot" y "floodassistant".
+    <ul>
+        <div>
+            <label for="accion">Acción:</label>
+            <select id="accion">
+                <option value="">Todas</option>
+            </select>
+            <label for="autor">Usuario:</label>
+            <input type="text" id="autor" placeholder="Buscar por usuario" />
+            <label for="moderador">Moderador:</label>
+            <input type="text" id="moderador" placeholder="Buscar por moderador">
+            <button id="btnBuscar">Buscar</button>
+            <label>
+                <input type="checkbox" id="ignorarModsCheckbox">
+                Ignorar bots
+                <span class="tooltip">
+                    <span style="color: #007bff;">&#9432;</span>
+                    <span class="tooltiptext">
+                        Si activas esta opción, se excluirán todos los registros de los moderadores "AutoModerator",
+                        "EmpleadoEstatalBot" y "floodassistant".
+                    </span>
                 </span>
-            </span>
-        </label>
+            </label>
 
-    </div>
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-        <button id="btnReset" style="margin-bottom:1rem;">Resetear</button>
-        <button id="toggleExpandAll" style="margin-bottom:1rem;">Mostrar todos los detalles</button>
-    </div>
+        </div>
 
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <button id="btnReset" style="margin-bottom:1rem;">Resetear</button>
+            <button id="toggleExpandAll" style="margin-bottom:1rem;">Mostrar todos los detalles</button>
+        </div>
+    </ul>
 
 
     <div id="errorMsg" style="color: red; display: none;"></div>
