@@ -14,6 +14,7 @@ let descriptionMap = {
   'lock': 'Comentarios de publicación bloqueados.',
   'marknsfw': 'Publicación marcada como NSFW.',
   'markoriginalcontent': 'Publicación marcada como OC (Original Content)',
+  'muteuser': 'Usuario(a) ya no puede enviar mensajes por modmail',
   'removecomment': 'Comentario eliminado.',
   'removelink': 'Publicación eliminada.',
   'removelinkauto': 'Publicación automáticamente eliminada.',
@@ -98,6 +99,7 @@ let iconMap = {
     'lock': 'lock',
     'marknsfw': 'no_adult_content',
     'markoriginalcontent': 'folder_special',
+    'muteuser': 'mic_off',
     'removecomment': 'speaker_notes_off',
     'removelink': 'delete',
     'removelinkauto': 'delete',
@@ -115,7 +117,7 @@ let iconMap = {
     'unbanuser': 'how_to_reg',
     'unignorereportscomment': 'assignment_turned_in',
     'unignorereportspost': 'assignment_turned_in',
-    'unmuteuser': 'mobile_friendly',
+    'unmuteuser': 'mic',
     'unlock': 'lock_open',
     'unspoiler': 'visibility',
     'unstickycomment': 'location_off',
@@ -338,7 +340,7 @@ async function cargarDatos(append = false) {
       if (item.target_author) {
         const enlace = document.createElement("a");
         enlace.className = "sin-estilo";
-        enlace.href = "https://reddit.com/user/" + item.target_author;
+        enlace.href = "https://www.reddit.com/user/" + item.target_author;
         enlace.target = "_blank";
         enlace.textContent = item.target_author;
         tdAuthor.appendChild(enlace);
@@ -369,7 +371,7 @@ async function cargarDatos(append = false) {
       const tdEnlace = document.createElement("td");
       if (item.target_permalink) {
         const enlace = document.createElement("a");
-        enlace.href = "https://reddit.com" + item.target_permalink;
+        enlace.href = "https://www.reddit.com" + item.target_permalink;
         enlace.target = "_blank";
         enlace.rel = "noopener noreferrer";
         enlace.textContent = "Link";
@@ -452,7 +454,7 @@ function generarDetalleExpandidoSeguro(item) {
   if (item.target_title) addRow("Titulo", item.target_title);
   if (item.target_permalink) {
     const enlace = document.createElement("a");
-    enlace.href = "https://reddit.com" + item.target_permalink;
+    enlace.href = "https://www.reddit.com" + item.target_permalink;
     enlace.textContent = item.target_permalink;
     enlace.target = "_blank";
     enlace.rel = "noopener noreferrer";
