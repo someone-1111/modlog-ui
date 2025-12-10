@@ -1,7 +1,7 @@
 /* Base */
 body {
   font-family: Arial, sans-serif;
-  padding: 1.5rem;
+  padding: 1rem;
   background: #23272e;
   color: #f1f1f1;
 }
@@ -93,7 +93,6 @@ a.sin-estilo:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
 }
 
 .divSeguro {
@@ -116,6 +115,7 @@ a.sin-estilo:hover {
   border-radius: 8px;
   overflow: hidden;
   color: #f1f1f1;
+  border: 1px solid #555;
 }
 
 .divSeguro th,
@@ -218,10 +218,14 @@ ul {
   display: inline-block;
   cursor: default;
   z-index: 999;
+  pointer-events: auto;
 }
 
+/* Tooltip bubble: force it to be centered over icon and above everything.
+   Use a very large z-index and ensure it is positioned outside normal clipping
+   by keeping ancestor overflow visible. */
 .tooltip .tooltiptext {
-  z-index: 9999;
+  z-index: 2147483647; /* encima de header/ul */
   visibility: hidden;
   background-color: #333;
   color: #fff;
@@ -229,29 +233,84 @@ ul {
   border-radius: 6px;
   padding: 8px;
   position: absolute;
-  bottom: 125%;
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.18s ease;
   font-size: 13px;
-  text-wrap-style: stable;
+  white-space: normal;
+  max-width: 320px;
+  box-sizing: border-box;
+  pointer-events: auto;
 }
 
-.tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext,
+.tooltip:focus-within .tooltiptext {
   visibility: visible;
   opacity: 1;
 }
 
+/* Ensure the tooltip arrow is centered */
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
   top: 100%;
   left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
+  transform: translateX(-50%);
+  border-width: 6px;
   border-style: solid;
   border-color: #333 transparent transparent transparent;
+}
+
+/* --- Fix header/ul stacking and clipping --- */
+/* Make sure header/ul do not clip children and don't create unexpected stacking contexts */
+.header-bar,
+ul {
+  position: relative;     /* keep in flow but allow tooltip to overlay */
+  z-index: 1000;          /* lower than tooltip */
+  overflow: visible;      /* CRUCIAL: allow tooltip to escape the <ul> box */
+  transform: none;        /* avoid creating new stacking context */
+  will-change: auto;
+}
+
+
+
+button {
+  background-color: #3a3f4b;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+button:hover {
+  background-color: #50576a;
+  color: #fff;
+}
+
+a.sin-estilo {
+  color:hsl(210, 50%, 70%);
+  text-decoration: none;
+}
+
+a.sin-estilo:hover {
+  text-decoration: underline;
+  color: #999;
+}
+
+input,
+select,
+textarea {
+  background-color: #313640;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+a {
+  color: hsl(210, 50%, 70%);
+}
+
+.detalle-expandido td {
+  background: #2d323b;
+  border: 1px solid #5550;
 }
 
 /* Spoilers */
@@ -307,14 +366,52 @@ pre code {
 }
 
 @media (min-width: 768px) {
+  /* header / filters must not clip children and should allow tooltips to escape */
+  .header-bar,
   ul {
-    list-style-type: none;
-    overflow: hidden;
-    background-color: #23272e;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    left: 0;
+    right: 0;
+    z-index: 1000;          /* keep relatively low so tooltips can be above */
+    overflow: visible !important; /* allow tooltip to overflow the box */
+    transform: none;        /* avoid creating new stacking contexts */
+    will-change: auto;
+    background: #23272e;
+    box-sizing: border-box;
   }
+
+  /* Ensure tooltip container inside ul does not clip */
+  ul .tooltip {
+    position: relative;
+    z-index: 2147483646; /* below tooltiptext but above most page content */
+    overflow: visible;
+    pointer-events: auto;
+  }
+
+  /* Tooltip bubble must be positioned above everything */
+  ul .tooltip .tooltiptext {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2147483647;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    pointer-events: auto;
+    white-space: normal;
+    max-width: 320px;
+    box-sizing: border-box;
+  }
+
+  ul .tooltip:hover .tooltiptext,
+  ul .tooltip:focus-within .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* keep legacy menu styles (no overflow:hidden) */
   li {
     float: left;
   }
@@ -325,43 +422,8 @@ pre code {
     padding: 14px 16px;
     text-decoration: none;
   }
+
   html {
     scroll-padding-top: 76px;
   }
-}
-
-button {
-  background-color: #3a3f4b;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-button:hover {
-  background-color: #50576a;
-  color: #fff;
-}
-
-a.sin-estilo {
-  color:hsl(210, 50%, 70%);
-  text-decoration: none;
-}
-
-a.sin-estilo:hover {
-  text-decoration: underline;
-  color: #999;
-}
-
-input,
-select,
-textarea {
-  background-color: #313640;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-
-a {
-  color: hsl(210, 50%, 70%);
-}
-
-.detalle-expandido td {
-  background: #2d323b;
 }

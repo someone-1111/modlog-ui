@@ -169,6 +169,41 @@ const tbody = document.querySelector("#tablaLogs tbody");
 const totalResultadosEl = document.getElementById("totalResultados");
 const errorMsg = document.getElementById("errorMsg");
 
+// --- Nueva función: sincroniza el ancho del <ul> con el ancho real de la tabla ---
+function syncUlToTable() {
+  const table = document.getElementById("tablaLogs");
+  const ul = document.querySelector("ul");
+  if (!table || !ul) return;
+  const w = Math.round(table.getBoundingClientRect().width);
+  ul.style.width = w + "px";
+  ul.style.maxWidth = "none";
+  ul.style.boxSizing = "border-box";
+}
+
+// Observador para detectar cambios en el tamaño de la tabla (llama syncUlToTable)
+if (window.ResizeObserver) {
+  (function attachObserver() {
+    let tableEl = document.getElementById("tablaLogs");
+    if (tableEl) {
+      const ro = new ResizeObserver(syncUlToTable);
+      ro.observe(tableEl);
+      // initial sync
+      syncUlToTable();
+    } else {
+      // tabla puede crearse dinámicamente: volver a intentar
+      const iv = setInterval(() => {
+        tableEl = document.getElementById("tablaLogs");
+        if (tableEl) {
+          clearInterval(iv);
+          const ro2 = new ResizeObserver(syncUlToTable);
+          ro2.observe(tableEl);
+          syncUlToTable();
+        }
+      }, 300);
+    }
+  })();
+}
+
 const MAX_INPUT_LENGTH = 32;
 
 [autorInput, moderadorInput].forEach(input => {
@@ -370,17 +405,55 @@ async function cargarDatos(append = false) {
       // Columna: enlace
       const tdEnlace = document.createElement("td");
       if (item.target_permalink) {
-        const enlace = document.createElement("a");
-        enlace.href = "https://www.reddit.com" + item.target_permalink;
-        enlace.target = "_blank";
-        enlace.rel = "noopener noreferrer";
-        enlace.textContent = "Link";
-        tdEnlace.appendChild(enlace);
+        // Parsear permalink: puede ser:
+        // /r/chile/comments/ID_POST/SLUG/   (solo post)
+        // /r/chile/comments/ID_POST/SLUG/ID_COMENTARIO/   (post + comment)
+        const match = item.target_permalink.match(/\/comments\/([^\/]+)(?:\/([^\/]+)(?:\/([^\/]+)\/?)?)?/);
+        const idPost = match ? match[1] : null;
+        const slug = match && match[2] ? match[2] : null;
+        const idComment = match && match[3] ? match[3] : null;
+
+        if (idPost) {
+          // Enlace al post: incluye slug si existe
+          const postHref = "https://www.reddit.com/r/chile/comments/" + idPost + (slug ? ("/" + slug + "/") : "/");
+          const postLink = document.createElement("a");
+          postLink.href = postHref;
+          postLink.target = "_blank";
+          postLink.rel = "noopener noreferrer";
+          postLink.textContent = idPost;
+          tdEnlace.appendChild(postLink);
+
+          // Si hay idComment, mostrar separador y enlace al comentario.
+          // Si existe slug, uso /ID_POST/SLUG/ID_COMMENT/
+          // Si no existe slug, uso el formato /ID_POST/_/ID_COMMENT/
+          if (idComment) {
+            const sep = document.createElement("span");
+            sep.textContent = " | ";
+            tdEnlace.appendChild(sep);
+
+            const commentHref = "https://www.reddit.com/r/chile/comments/" + idPost +
+              (slug ? ("/" + slug + "/" + idComment + "/") : ("/_/" + idComment + "/"));
+
+            const commentLink = document.createElement("a");
+            commentLink.href = commentHref;
+            commentLink.target = "_blank";
+            commentLink.rel = "noopener noreferrer";
+            commentLink.textContent = idComment;
+            tdEnlace.appendChild(commentLink);
+          }
+        } else {
+          // Fallback: mostrar enlace completo si no se pudo parsear
+          const enlace = document.createElement("a");
+          enlace.href = "https://www.reddit.com" + item.target_permalink;
+          enlace.target = "_blank";
+          enlace.rel = "noopener noreferrer";
+          enlace.textContent = item.target_permalink;
+          tdEnlace.appendChild(enlace);
+        }
       } else {
         tdEnlace.textContent = "";
       }
       tr.appendChild(tdEnlace);
-
 
 
       frag.appendChild(tr);
@@ -399,6 +472,9 @@ async function cargarDatos(append = false) {
 
 
     tbody.appendChild(frag);
+
+    // sincronizar el <ul> con la tabla ahora que DOM cambió (tabla finalizada)
+    try { syncUlToTable(); } catch(e){/* no bloquear si algo falla */ }
 
     hasMore = data.results.length > 0;
     pagina++;
@@ -419,6 +495,8 @@ async function cargarDatos(append = false) {
     }
     contador++;
 
+    // Asegura una sincronización final por si algo más cambió
+    try { syncUlToTable(); } catch(e){/* ignore */ }
   }
 }
 
@@ -445,7 +523,7 @@ function generarDetalleExpandidoSeguro(item) {
     tabla.appendChild(tr);
   }
 
-  if (item.target_author) addRow("Autor", item.target_author);
+  if (item.target_author) addRow("Usuario Afectado", item.target_author);
   if (item.action) addRow("Acción", `${descriptionMap[item.action] || ""}`);
   if (item.description) addRow("Descripción", item.description);
   if (item.details) addRow("Detalle", item.details);
