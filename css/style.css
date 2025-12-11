@@ -24,7 +24,7 @@ table {
 
 th,
 td {
-  padding: 8px 12px;
+  /*padding: 8px 12px;*/
   border: 1px solid #555;
   text-align: center;
 }
@@ -120,7 +120,7 @@ a.sin-estilo:hover {
 
 .divSeguro th,
 .divSeguro td {
-  padding: 10px 14px;
+  padding: 5px 14px;
   text-align: left;
   font-size: 1rem;
   border-bottom: 1px solid #555;
@@ -172,7 +172,7 @@ a.sin-estilo:hover {
   }
   th,
   td {
-    padding: 6px;
+    padding: 5px;
   }
   button {
     padding: 0.6rem;
